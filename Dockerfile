@@ -13,11 +13,6 @@ RUN apt-get update \
         mono-devel \
     && rm -rf /var/lib/apt/lists/*
 
-# Cabeçalho pré-compilado do bits/stdc++.h: o Run de C++ compila ~4x mais rápido
-# e com bem menos memória. As flags têm de ser as mesmas do Run no backend
-# (jude-backend-api, app/contest/playground/protocol.py); com flags diferentes o
-# g++ ignora o .gch sem erro e volta a compilar o cabeçalho inteiro. O build
-# falha se o g++ não usar o .gch.
 ARG PCH_FLAGS="-std=c++17 -O2"
 RUN header="$(echo '#include <bits/stdc++.h>' | g++ $PCH_FLAGS -x c++ -E -H - 2>&1 >/dev/null \
         | awk '/\/bits\/stdc\+\+\.h$/ {print $2; exit}')" \
